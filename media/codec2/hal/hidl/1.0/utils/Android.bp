@@ -133,6 +133,71 @@ cc_library {
     ],
 }
 
+// CFI-disabled variant for compatibility with vendor prebuilt binaries (e.g., Dolby)
+// Use patchelf to redirect prebuilt binaries to link against this variant
+cc_library {
+    name: "libcodec2_hidl@1.0.vendor_compat",
+    vendor: true,
+    stem: "libcodec2_hidl@1.0.vendor_compat",
+
+    defaults: ["hidl_defaults"],
+
+    srcs: [
+        "Component.cpp",
+        "ComponentInterface.cpp",
+        "ComponentStore.cpp",
+        "Configurable.cpp",
+        "InputBufferManager.cpp",
+        "types.cpp",
+    ],
+
+    header_libs: [
+        "libbinder_headers",
+        "libcodec2_internal",
+        "libsystem_headers",
+    ],
+
+    shared_libs: [
+        "android.hardware.graphics.bufferqueue@1.0",
+        "android.hardware.graphics.bufferqueue@2.0",
+        "android.hardware.graphics.common@1.0",
+        "android.hardware.media@1.0",
+        "android.hardware.media.bufferpool@2.0",
+        "android.hardware.media.c2@1.0",
+        "android.hardware.media.omx@1.0",
+        "libbase",
+        "libcodec2",
+        "libcodec2_hal_common",
+        "libcodec2_hidl_plugin",
+        "libcodec2_vndk",
+        "libcutils",
+        "libhidlbase",
+        "liblog",
+        "libstagefright_bufferpool@2.0.1",
+        "libui",
+        "libutils",
+    ],
+
+    export_include_dirs: [
+        "include",
+    ],
+
+    export_shared_lib_headers: [
+        "android.hardware.media.c2@1.0",
+        "libcodec2",
+        "libcodec2_hal_common",
+        "libcodec2_vndk",
+        "libhidlbase",
+        "libstagefright_bufferpool@2.0.1",
+        "libui",
+    ],
+
+    // Disable CFI for compatibility with prebuilt vendor binaries
+    sanitize: {
+        cfi: false,
+    },
+}
+
 // public dependency for Codec 2.0 HAL service implementations
 cc_defaults {
     name: "libcodec2-hidl-defaults@1.0",
