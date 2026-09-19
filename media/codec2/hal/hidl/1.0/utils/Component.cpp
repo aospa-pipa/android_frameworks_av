@@ -667,7 +667,11 @@ Component::~Component() {
         C2BqPoolInvalidator::getInstance().queue(bqInvalidateItem);
     }
     InputBufferManager::unregisterFrameData(mListener);
-    mStore->reportComponentDeath(this);
+    // Check for null pointer before calling reportComponentDeath
+    // This can happen with vendor prebuilt binaries that have different initialization
+    if (mStore != nullptr) {
+        mStore->reportComponentDeath(this);
+    }
 }
 
 }  // namespace utils
